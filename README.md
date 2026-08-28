@@ -10,7 +10,8 @@ The application allows multiple users to join a common chat, communicate with ea
 
 ## 📌 Project Flow
 
-![Real-Time Chat Application - Project Flow](https://github.com/user-attachments/assets/a7e1b26e-1850-4831-af40-f43b1ce7e9ae)
+![Real-Time Chat Application - Project Flow]<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/eccb6e80-de5d-4174-8879-8da69ffc58a6" />
+
 
 ---
 
