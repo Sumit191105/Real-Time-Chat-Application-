@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat App</title>
+</head>
+
+<body>
+
+    <h1>Chatting</h1>
+
+    <!-- Username -->
+    <input id="username" type="text" placeholder="Enter your name">
+    <button id="joinButton">Join</button>
+
+    <br><br>
+
+    <!-- Message -->
+    <input id="message" type="text" placeholder="Enter message">
+    <button id="sendButton">Send</button>
+
+    <div id="messages"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+
+        const socket = io();
+
+        console.log("Socket object created");
+
+        socket.on("connect", () => {
+            console.log("CONNECTED TO SERVER");
+            console.log("Socket ID:", socket.id);
+        });
+
+        socket.on("connect_error", (error) => {
+            console.log("CONNECTION ERROR:", error);
+        });
+
+        const usernameInput = document.getElementById("username");
+        const joinButton = document.getElementById("joinButton");
+
+        const messageInput = document.getElementById("message");
+        const sendButton = document.getElementById("sendButton");
+
+        const allMessages = document.getElementById("messages");
+
+
+        // Join server
+        joinButton.addEventListener("click", () => {
+
+            const username = usernameInput.value;
+
+            socket.emit("user-joined", username);
+
+        });
+
+
+        // Receive joined notification
+        socket.on("user-joined", (message) => {
+
+            const p = document.createElement("p");
+
+            p.innerText = message;
+
+            allMessages.appendChild(p);
+
+        });
+
+
+        // Send message
+        sendButton.addEventListener("click", () => {
+
+            const message = messageInput.value;
+
+            console.log("Sending message:", message);
+
+            socket.emit("user-message", message);
+
+            messageInput.value = "";
+
+        });
+
+
+        // Receive message
+        socket.on("message", (data) => {
+
+            const p = document.createElement("p");
+
+            p.innerText = `${data.username} : ${data.message}`;
+
+            allMessages.appendChild(p);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
