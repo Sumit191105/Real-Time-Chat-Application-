@@ -2,296 +2,130 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Chat App</title>
+    <title>CHATLINK :: SYS TERMINAL</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>Chatting</h1>
+    <div class="crt">
+
+        <!-- Title Bar -->
+        <div class="titlebar">
+
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+            <span class="label">
+                chatlink — sys terminal
+            </span>
+
+            <span class="status">
+                <span class="pulse"></span>
+                connected
+            </span>
+
+        </div>
 
 
-    <!-- =========================
-         USERNAME
-    ========================== -->
+        <!-- Boot Section -->
+        <div class="boot">
 
-    <input
-        id="username"
-        type="text"
-        placeholder="Enter your name"
-    >
+            <span class="big">
+                CHATLINK v1.0
+            </span>
 
-    <button id="joinButton">
-        Join
-    </button>
+            boot sequence complete.
+            type a handle to authenticate.
 
-    <button id="leaveButton">
-        Leave Chat
-    </button>
+            
+
+        </div>
 
 
-    <br>
-    <br>
+        <!-- Main Layout -->
+        <div class="body-grid">
+
+            <!-- Users -->
+            <div class="nodes">
+
+                <h4>Active nodes</h4>
+
+                <div id="users"></div>
+
+            </div>
 
 
-    <!-- =========================
-         ONLINE USERS
-    ========================== -->
+            <!-- Chat -->
+            <div class="main">
 
-    <h3>Online Users</h3>
+                <!-- Username -->
+                <div class="identity-row">
 
-    <div id="users"></div>
+                    <input
+                        id="username"
+                        type="text"
+                        placeholder="handle_"
+                    >
 
+                    <button id="joinButton">
+                        connect
+                    </button>
 
-    <br>
+                    <button id="leaveButton">
+                        disconnect
+                    </button>
 
-
-    <!-- =========================
-         MESSAGE
-    ========================== -->
-
-    <input
-        id="message"
-        type="text"
-        placeholder="Enter message"
-    >
-
-    <button id="sendButton">
-        Send
-    </button>
+                </div>
 
 
-    <!-- =========================
-         ALL MESSAGES
-    ========================== -->
+                <!-- Messages -->
+                <div id="messages"></div>
 
-    <div id="messages"></div>
+
+                <!-- Message Input -->
+                <div class="send-row">
+
+                    <span class="prompt-label">
+                        $
+                    </span>
+
+                    <input
+                        id="message"
+                        type="text"
+                        placeholder="type a message and hit send_"
+                    >
+
+                    <button id="sendButton">
+                        send
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <!-- Socket.IO -->
-
     <script src="/socket.io/socket.io.js"></script>
 
-
-    <script>
-
-        // =========================
-        // SOCKET CONNECTION
-        // =========================
-
-        const socket = io();
-
-        let hasJoined = false;
-
-
-        console.log("Socket object created");
-
-
-        socket.on("connect", () => {
-
-            console.log("CONNECTED TO SERVER");
-
-            console.log("Socket ID:", socket.id);
-
-        });
-
-
-        socket.on("connect_error", (error) => {
-
-            console.log("CONNECTION ERROR:", error);
-
-        });
-
-
-        // =========================
-        // GET HTML ELEMENTS
-        // =========================
-
-        const usernameInput =
-            document.getElementById("username");
-
-        const joinButton =
-            document.getElementById("joinButton");
-
-        const leaveButton =
-            document.getElementById("leaveButton");
-
-        const messageInput =
-            document.getElementById("message");
-
-        const sendButton =
-            document.getElementById("sendButton");
-
-        const allMessages =
-            document.getElementById("messages");
-
-        const allUsers =
-            document.getElementById("users");
-
-
-        // =========================
-        // JOIN CHAT
-        // =========================
-
-        joinButton.addEventListener("click", () => {
-
-            const username = usernameInput.value.trim();
-
-            // Don't allow empty username
-            if (username === "") {
-                return;
-            }
-
-            // Don't join twice
-            if (hasJoined) {
-                return;
-            }
-
-            hasJoined = true;
-
-            socket.emit("user-joined", username);
-
-        });
-
-
-        // =========================
-        // USER JOINED
-        // =========================
-
-        socket.on("user-joined", (message) => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            const p = document.createElement("p");
-
-            p.innerText = message;
-
-            allMessages.appendChild(p);
-
-        });
-
-
-        // =========================
-        // ONLINE USERS
-        // =========================
-
-        socket.on("users", (users) => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            allUsers.innerHTML = "";
-
-            users.forEach((username) => {
-
-                const p = document.createElement("p");
-
-                p.innerText = username;
-
-                allUsers.appendChild(p);
-
-            });
-
-        });
-
-
-        // =========================
-        // USER LEFT
-        // =========================
-
-        socket.on("user-left", (message) => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            const p = document.createElement("p");
-
-            p.innerText = message;
-
-            allMessages.appendChild(p);
-
-        });
-
-
-        // =========================
-        // SEND MESSAGE
-        // =========================
-
-        sendButton.addEventListener("click", () => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            const message = messageInput.value.trim();
-
-            if (message === "") {
-                return;
-            }
-
-            console.log("Sending message:", message);
-
-            socket.emit("user-message", message);
-
-            messageInput.value = "";
-
-        });
-
-
-        // =========================
-        // RECEIVE MESSAGE
-        // =========================
-
-        socket.on("message", (data) => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            const p = document.createElement("p");
-
-            p.innerText =
-                `${data.username} : ${data.message}`;
-
-            allMessages.appendChild(p);
-
-        });
-
-
-        // =========================
-        // LEAVE CHAT
-        // =========================
-
-        leaveButton.addEventListener("click", () => {
-
-            if (!hasJoined) {
-                return;
-            }
-
-            socket.emit("leave-chat");
-
-            hasJoined = false;
-
-            // Clear online users
-            allUsers.innerHTML = "";
-
-            // Clear username
-            usernameInput.value = "";
-
-            console.log("You left the chat");
-
-        });
-
-    </script>
+    <!-- Our JavaScript -->
+    <script src="script.js"></script>
 
 </body>
 

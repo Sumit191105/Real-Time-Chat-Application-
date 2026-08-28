@@ -1,0 +1,511 @@
+:root {
+    --bg: #080b08;
+    --amber: #ffb000;
+    --amber-dim: #9a6c00;
+    --panel: #0f140f;
+    --line: #2a3620;
+    --red: #ff5c33;
+    --green: #5fff8f;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+
+    background:
+        radial-gradient(
+            ellipse at 50% -10%,
+            #10160f 0%,
+            var(--bg) 60%
+        );
+
+    color: var(--amber);
+
+    font-family: "IBM Plex Mono", monospace;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100vh;
+
+    padding: 24px;
+}
+
+
+/* =========================
+   CRT CONTAINER
+========================= */
+
+.crt {
+    width: min(980px, 100%);
+
+    background: var(--panel);
+
+    border: 1px solid var(--line);
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 0 0 1px #000,
+        0 30px 80px -30px rgba(0, 0, 0, 0.9),
+        inset 0 0 60px rgba(255, 176, 0, 0.03);
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.crt::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 0px,
+            rgba(0, 0, 0, 0) 2px,
+            rgba(0, 0, 0, 0.15) 3px
+        );
+
+    pointer-events: none;
+
+    mix-blend-mode: overlay;
+
+    animation: flicker 6s infinite;
+}
+
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes flicker {
+
+    0%,
+    96%,
+    100% {
+        opacity: 1;
+    }
+
+    97% {
+        opacity: 0.85;
+    }
+
+    98% {
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   TITLE BAR
+========================= */
+
+.titlebar {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 14px;
+
+    background: #0c100b;
+
+    border-bottom: 1px solid var(--line);
+
+    font-size: 12px;
+
+    letter-spacing: 0.12em;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #3a2f14;
+
+    border: 1px solid var(--line);
+}
+
+.titlebar .label {
+    margin-left: 8px;
+
+    color: var(--amber-dim);
+
+    text-transform: uppercase;
+}
+
+.titlebar .status {
+    margin-left: auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: var(--green);
+}
+
+.pulse {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--green);
+
+    box-shadow: 0 0 6px var(--green);
+
+    animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.25;
+    }
+}
+
+
+/* =========================
+   BOOT
+========================= */
+
+.boot {
+    font-family: "VT323", monospace;
+
+    font-size: 22px;
+
+    color: var(--amber-dim);
+
+    padding: 14px 20px 0;
+
+    letter-spacing: 0.02em;
+}
+
+.boot .big {
+    font-size: 34px;
+
+    color: var(--amber);
+
+    display: block;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+.body-grid {
+    display: grid;
+
+    grid-template-columns: 220px 1fr;
+
+    min-height: 520px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 680px) {
+
+    .body-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nodes {
+        order: 2;
+
+        border-top: 1px solid var(--line);
+
+        border-right: none !important;
+    }
+}
+
+
+/* =========================
+   USERS
+========================= */
+
+.nodes {
+    border-right: 1px solid var(--line);
+
+    padding: 16px 14px;
+
+    background: #0a0e0a;
+}
+
+.nodes h4 {
+    margin: 0 0 10px;
+
+    font-size: 11px;
+
+    letter-spacing: 0.18em;
+
+    color: var(--amber-dim);
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+}
+
+#users {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    font-size: 14px;
+}
+
+#users p {
+    margin: 0;
+
+    padding: 4px 6px;
+
+    border-left: 2px solid var(--green);
+
+    background: rgba(95, 255, 143, 0.05);
+}
+
+#users p::before {
+    content: "● ";
+
+    color: var(--green);
+}
+
+
+/* =========================
+   MAIN CHAT
+========================= */
+
+.main {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 16px 18px;
+}
+
+
+/* =========================
+   IDENTITY
+========================= */
+
+.identity-row {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    padding-bottom: 12px;
+
+    margin-bottom: 12px;
+
+    border-bottom: 1px dashed var(--line);
+}
+
+
+/* =========================
+   INPUTS
+========================= */
+
+input[type="text"] {
+    background: #0a0e0a;
+
+    border: 1px solid var(--line);
+
+    color: var(--amber);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    padding: 9px 10px;
+
+    outline: none;
+
+    border-radius: 2px;
+}
+
+input[type="text"]:focus {
+    border-color: var(--amber-dim);
+
+    box-shadow:
+        0 0 0 2px rgba(255, 176, 0, 0.12);
+}
+
+input[type="text"]::placeholder {
+    color: #5a5033;
+}
+
+#username {
+    flex: 1;
+
+    min-width: 140px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+    font-family: inherit;
+
+    font-size: 13px;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+
+    background: transparent;
+
+    color: var(--amber);
+
+    border: 1px solid var(--amber-dim);
+
+    padding: 9px 14px;
+
+    cursor: pointer;
+
+    border-radius: 2px;
+
+    transition:
+        background 0.15s,
+        color 0.15s;
+}
+
+button:hover {
+    background: var(--amber);
+
+    color: #1a1200;
+}
+
+#leaveButton {
+    color: var(--red);
+
+    border-color: #7a3220;
+}
+
+#leaveButton:hover {
+    background: var(--red);
+
+    color: #1a0800;
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+#messages {
+    flex: 1;
+
+    min-height: 280px;
+
+    max-height: 380px;
+
+    overflow-y: auto;
+
+    font-size: 14.5px;
+
+    line-height: 1.7;
+
+    padding-right: 6px;
+}
+
+#messages p {
+    margin: 0 0 2px;
+}
+
+#messages p::before {
+    content: "> ";
+
+    color: var(--amber-dim);
+}
+
+#messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+#messages::-webkit-scrollbar-thumb {
+    background: var(--line);
+
+    border-radius: 4px;
+}
+
+
+/* =========================
+   SEND AREA
+========================= */
+
+.send-row {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+    border-top: 1px dashed var(--line);
+
+    padding-top: 12px;
+}
+
+#message {
+    flex: 1;
+}
+
+.prompt-label {
+    font-family: "VT323", monospace;
+
+    font-size: 20px;
+
+    color: var(--green);
+
+    align-self: center;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   CURSOR
+========================= */
+
+
+
+
+
+
+
+
+
+@keyframes blink {
+
+    50% {
+        opacity: 0;
+    }
+}
