@@ -2,66 +2,172 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Chat App</title>
+
 </head>
 
 <body>
 
     <h1>Chatting</h1>
 
-    <!-- Username -->
-    <input id="username" type="text" placeholder="Enter your name">
-    <button id="joinButton">Join</button>
 
-    <br><br>
+    <!-- =========================
+         USERNAME
+    ========================== -->
 
-    <!-- Message -->
-    <input id="message" type="text" placeholder="Enter message">
-    <button id="sendButton">Send</button>
+    <input
+        id="username"
+        type="text"
+        placeholder="Enter your name"
+    >
+
+    <button id="joinButton">
+        Join
+    </button>
+
+    <button id="leaveButton">
+        Leave Chat
+    </button>
+
+
+    <br>
+    <br>
+
+
+    <!-- =========================
+         ONLINE USERS
+    ========================== -->
+
+    <h3>Online Users</h3>
+
+    <div id="users"></div>
+
+
+    <br>
+
+
+    <!-- =========================
+         MESSAGE
+    ========================== -->
+
+    <input
+        id="message"
+        type="text"
+        placeholder="Enter message"
+    >
+
+    <button id="sendButton">
+        Send
+    </button>
+
+
+    <!-- =========================
+         ALL MESSAGES
+    ========================== -->
 
     <div id="messages"></div>
 
+
+    <!-- Socket.IO -->
+
     <script src="/socket.io/socket.io.js"></script>
+
 
     <script>
 
+        // =========================
+        // SOCKET CONNECTION
+        // =========================
+
         const socket = io();
+
+        let hasJoined = false;
+
 
         console.log("Socket object created");
 
+
         socket.on("connect", () => {
+
             console.log("CONNECTED TO SERVER");
+
             console.log("Socket ID:", socket.id);
+
         });
+
 
         socket.on("connect_error", (error) => {
+
             console.log("CONNECTION ERROR:", error);
+
         });
 
-        const usernameInput = document.getElementById("username");
-        const joinButton = document.getElementById("joinButton");
 
-        const messageInput = document.getElementById("message");
-        const sendButton = document.getElementById("sendButton");
+        // =========================
+        // GET HTML ELEMENTS
+        // =========================
 
-        const allMessages = document.getElementById("messages");
+        const usernameInput =
+            document.getElementById("username");
+
+        const joinButton =
+            document.getElementById("joinButton");
+
+        const leaveButton =
+            document.getElementById("leaveButton");
+
+        const messageInput =
+            document.getElementById("message");
+
+        const sendButton =
+            document.getElementById("sendButton");
+
+        const allMessages =
+            document.getElementById("messages");
+
+        const allUsers =
+            document.getElementById("users");
 
 
-        // Join server
+        // =========================
+        // JOIN CHAT
+        // =========================
+
         joinButton.addEventListener("click", () => {
 
-            const username = usernameInput.value;
+            const username = usernameInput.value.trim();
+
+            // Don't allow empty username
+            if (username === "") {
+                return;
+            }
+
+            // Don't join twice
+            if (hasJoined) {
+                return;
+            }
+
+            hasJoined = true;
 
             socket.emit("user-joined", username);
 
         });
 
 
-        // Receive joined notification
+        // =========================
+        // USER JOINED
+        // =========================
+
         socket.on("user-joined", (message) => {
+
+            if (!hasJoined) {
+                return;
+            }
 
             const p = document.createElement("p");
 
@@ -72,10 +178,65 @@
         });
 
 
-        // Send message
+        // =========================
+        // ONLINE USERS
+        // =========================
+
+        socket.on("users", (users) => {
+
+            if (!hasJoined) {
+                return;
+            }
+
+            allUsers.innerHTML = "";
+
+            users.forEach((username) => {
+
+                const p = document.createElement("p");
+
+                p.innerText = username;
+
+                allUsers.appendChild(p);
+
+            });
+
+        });
+
+
+        // =========================
+        // USER LEFT
+        // =========================
+
+        socket.on("user-left", (message) => {
+
+            if (!hasJoined) {
+                return;
+            }
+
+            const p = document.createElement("p");
+
+            p.innerText = message;
+
+            allMessages.appendChild(p);
+
+        });
+
+
+        // =========================
+        // SEND MESSAGE
+        // =========================
+
         sendButton.addEventListener("click", () => {
 
-            const message = messageInput.value;
+            if (!hasJoined) {
+                return;
+            }
+
+            const message = messageInput.value.trim();
+
+            if (message === "") {
+                return;
+            }
 
             console.log("Sending message:", message);
 
@@ -86,14 +247,47 @@
         });
 
 
-        // Receive message
+        // =========================
+        // RECEIVE MESSAGE
+        // =========================
+
         socket.on("message", (data) => {
+
+            if (!hasJoined) {
+                return;
+            }
 
             const p = document.createElement("p");
 
-            p.innerText = `${data.username} : ${data.message}`;
+            p.innerText =
+                `${data.username} : ${data.message}`;
 
             allMessages.appendChild(p);
+
+        });
+
+
+        // =========================
+        // LEAVE CHAT
+        // =========================
+
+        leaveButton.addEventListener("click", () => {
+
+            if (!hasJoined) {
+                return;
+            }
+
+            socket.emit("leave-chat");
+
+            hasJoined = false;
+
+            // Clear online users
+            allUsers.innerHTML = "";
+
+            // Clear username
+            usernameInput.value = "";
+
+            console.log("You left the chat");
 
         });
 
