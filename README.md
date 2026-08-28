@@ -298,26 +298,6 @@ Open the application in multiple browser tabs to test real-time communication be
 
 ---
 
-# 🔮 Future Improvements
-
-This project is currently a basic real-time chat application. I plan to extend it with:
-
-- User authentication
-- Online/offline status
-- Typing indicators
-- Chat rooms
-- Private messaging
-- Message timestamps
-- Message history
-- Database integration
-- Message editing and deletion
-- Voice communication
-- Video communication
-- Screen sharing
-- WebRTC-based peer-to-peer communication
-
----
-
 # 🎯 Learning Goal
 
 The long-term goal of this project is to evolve this application into a **real-time communication platform** with chat, voice, and video communication.
