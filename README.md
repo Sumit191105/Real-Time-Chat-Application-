@@ -1,11 +1,16 @@
-Absolutely. Here is the **complete `README.md` file** you can copy directly into your repository.
 
-````markdown
-# Real-Time Chat Application
+
+## Real-Time Chat Application
 
 A real-time web-based chat application built using **Node.js, Express.js, and Socket.IO**.
 
 This project was built to understand how real-time communication works between multiple clients and a backend server using Socket.IO and persistent connections.
+
+---
+
+## 📌 Project Workflow
+
+![Real-Time Chat Application - Project Flow](https://github.com/user-attachments/assets/a7e1b26e-1850-4831-af40-f43b1ce7e9ae)
 
 ---
 
