@@ -649,6 +649,3 @@ Interests:
 This project was built primarily as a **learning project** to understand Node.js, Express.js, Socket.IO, persistent connections, event-driven architecture, and real-time client-server communication.
 
 ````
-
-
-with your actual repository URL. I couldn't verify the GitHub repository from the supplied URL because GitHub returned a 404 when accessed. 
